@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	"github.com/mattnickolaus/pokedexREPL/internal/pokeapi"
 )
 
 var commandRegister map[string]cliCommand
@@ -12,7 +14,13 @@ var commandRegister map[string]cliCommand
 type cliCommand struct {
 	name        string
 	description string
-	callback    func() error
+	callback    func(*Config) error
+}
+
+type Config struct {
+	pokeapiClient pokeapi.Client
+	Next          *string
+	Previous      *string
 }
 
 func cleanInput(text string) []string {
@@ -32,10 +40,20 @@ func initCommandRegister() map[string]cliCommand {
 			description: "Displays a help message",
 			callback:    commandHelp,
 		},
+		"map": {
+			name:        "map",
+			description: "Gets the nearest(next) location-areas",
+			callback:    commandMap,
+		},
+		"mapb": {
+			name:        "mapb",
+			description: "Gets the previous location-areas",
+			callback:    commandMapBack,
+		},
 	}
 }
 
-func startRepl() {
+func startRepl(cfg *Config) {
 	scanner := bufio.NewScanner(os.Stdin)
 
 	commandRegister = initCommandRegister()
@@ -51,7 +69,7 @@ func startRepl() {
 		command := cleaned[0]
 		if _, ok := commandRegister[command]; ok {
 			c := commandRegister[command]
-			err := c.callback()
+			err := c.callback(cfg)
 			if err != nil {
 				fmt.Println(err)
 			}
