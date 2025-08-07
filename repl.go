@@ -14,7 +14,7 @@ var commandRegister map[string]cliCommand
 type cliCommand struct {
 	name        string
 	description string
-	callback    func(*Config) error
+	callback    func(*Config, ...string) error
 }
 
 type Config struct {
@@ -50,6 +50,11 @@ func initCommandRegister() map[string]cliCommand {
 			description: "Gets the previous location-areas",
 			callback:    commandMapBack,
 		},
+		"explore": {
+			name:        "explore",
+			description: "Use 'explore <location-name>' to get all the pokemon with an encounter at that location",
+			callback:    commandExplore,
+		},
 	}
 }
 
@@ -67,9 +72,15 @@ func startRepl(cfg *Config) {
 			continue
 		}
 		command := cleaned[0]
+
+		args := []string{}
+		if len(cleaned) > 1 {
+			args = cleaned[1:]
+		}
+
 		if _, ok := commandRegister[command]; ok {
 			c := commandRegister[command]
-			err := c.callback(cfg)
+			err := c.callback(cfg, args...)
 			if err != nil {
 				fmt.Println(err)
 			}
