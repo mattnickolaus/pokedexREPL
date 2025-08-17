@@ -11,9 +11,6 @@ func (c *Client) GetPokemonDetails(pokemonName string) (PokemonDetails, error) {
 	url := baseURL + "/pokemon/" + pokemonName
 
 	if val, ok := c.cache.Get(url); ok {
-		fmt.Println("Used Cache")
-		fmt.Println("----------")
-
 		// Use the cache
 		var pokemon PokemonDetails
 		if err := json.Unmarshal(val, &pokemon); err != nil {

@@ -61,6 +61,16 @@ func initCommandRegister() map[string]cliCommand {
 			description: "Use 'catch <pokemon>' to catch that pokemon and add to your pokedex",
 			callback:    commandCatch,
 		},
+		"inspect": {
+			name:        "inspect",
+			description: "Use 'inspect <pokemon>' to inspect that pokemon from your pokedex",
+			callback:    commandInspect,
+		},
+		"pokedex": {
+			name:        "pokedex",
+			description: "Use 'pokedex' to list all that you have caught in your pokedex",
+			callback:    commandPokedex,
+		},
 	}
 }
 

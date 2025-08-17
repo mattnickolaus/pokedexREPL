@@ -39,8 +39,13 @@ func isCaught(baseExp int) (bool, error) {
 	if baseExp == 0 {
 		return false, fmt.Errorf("pokemon not found")
 	}
-	catchRate := baseExp
-	rng := rand.Intn(700)
+	if baseExp > 400 {
+		baseExp = 399
+	}
+	ratio := float64(baseExp) / 400
+	catchRate := int(ratio * 100)
+	rng := rand.Intn(100)
+	// fmt.Printf("If RNG: %d > catch rate: %d\n", rng, catchRate)
 	if rng > catchRate {
 		return true, nil
 	}
