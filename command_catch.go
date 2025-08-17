@@ -22,10 +22,27 @@ func commandCatch(cfg *Config, args ...string) error {
 		return err
 	}
 
+	caught, err := isCaught(pokemonDetails.BaseExperience)
+	if err != nil {
+		return err
+	}
+	if !caught {
+		fmt.Printf("%s escaped!\n", pokemonName)
+		return nil
+	}
+	fmt.Printf("%s was caught!\n", pokemonName)
+	cfg.Pokedex[pokemonName] = pokemonDetails
 	return nil
 }
 
 func isCaught(baseExp int) (bool, error) {
-	catchRate := 10.0 / baseExp
+	if baseExp == 0 {
+		return false, fmt.Errorf("pokemon not found")
+	}
+	catchRate := baseExp
+	rng := rand.Intn(700)
+	if rng > catchRate {
+		return true, nil
+	}
 	return false, nil
 }
